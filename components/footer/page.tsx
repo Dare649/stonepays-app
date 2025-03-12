@@ -42,7 +42,7 @@ const Footer = () => {
         </div>
         <div className='w-full bg-primary-3 text-primary-4 lg:p-10 sm:p-3 mt-1'>
             <div className='flex justify-center'>
-            <p>
+            <p className='font-bold'>
                Copyright © {new Date().getFullYear()} Stone Pays. All rights reserved.
             </p>
             </div>

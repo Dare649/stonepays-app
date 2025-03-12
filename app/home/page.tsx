@@ -8,9 +8,9 @@ import { startLoading, stopLoading } from "@/redux/slice/loadingSlice";
 import { RootState } from "@/redux/store";
 import type { StaticImageData } from "next/image";
 import Tab from "@/components/tabs/page";
-import Description from "../shop/description/page";
-import AdditionalInformation from "../shop/additionalInformation/page";
-import Meta from "../shop/meta/page";
+import Description from "../../components/description/page";
+import AdditionalInformation from "../../components/additionalInformation/page";
+import Meta from "../../components/meta/page";
 
 interface UnitPrice {
   id: number;
@@ -183,9 +183,9 @@ const Home1 = () => {
                   title3="additional information"
                   content1={
                     <Description
-                      desc={selectedProduct.desc}
-                      reviews={selectedProduct.reviews}
-                      key_features={selectedProduct.key_features}
+                      desc={selectedProduct?.desc ?? "No description available"}
+                      reviews={selectedProduct?.reviews ?? 0}
+                      key_features={selectedProduct?.key_features ?? []}
                     />
                   }
                   content2={<Meta meta={selectedProduct.meta_information} reviews={selectedProduct.reviews} />}

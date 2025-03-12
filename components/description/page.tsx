@@ -7,12 +7,12 @@ interface KeyFeatures {
 };
 
 interface DescriptionProps {
-  desc?: string;
+  desc: string;
   key_features?: KeyFeatures[];
   reviews?: number;
 }
 
-const Description: React.FC<DescriptionProps> = ({ desc, key_features = [], reviews = 0 }) => {
+const Description: React.FC<DescriptionProps> = ({ desc = "No description available", key_features = [], reviews = 0 }) => {
   return (
     <div className="w-full">
         <h2 className='font-bold text-gray-400 capitalize my-5'>reviews ({reviews})</h2>
