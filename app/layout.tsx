@@ -6,6 +6,7 @@ import "./globals.css";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import LoadingOverlay from "@/components/loading/page";
+import Footer from "@/components/footer/page";
 
 
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <TopBar/>
           {children}
         </Provider>
+        <Footer/>
       </body>
     </html>
   );
