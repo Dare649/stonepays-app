@@ -6,14 +6,14 @@ import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "@/redux/slice/loadingSlice";
 import { RootState, AppDispatch } from "@/redux/store";
-import type { ProductData } from "@/redux/slice/product/productSlice";
+import { ProductData } from "@/redux/slice/product/productSlice";
 import { useSearchParams } from "next/navigation";
 import { toast } from 'react-toastify';
 import { createOrder } from "@/redux/slice/order/order";
 import { getSignedInUser } from "@/redux/slice/auth/auth";
 import axiosInstance from "@/util/axiosInstance";
 
-interface DigitalProductsProps {
+type DigitalProductsProps =  {
   products: ProductData[];
 }
 
@@ -157,7 +157,7 @@ const DigitalProducts: React.FC<DigitalProductsProps> = ({ products }) => {
           }
   
           // 🟢 Append return URL so the user comes back to the app after payment
-          const returnUrl = encodeURIComponent("http://localhost:3001/payment-success"); // Change this to your actual return URL
+          const returnUrl = encodeURIComponent("https://stonepays-app.vercel.app"); // Change this to your actual return URL
           const redirectUrl = `${mockCheckoutUrl}&returnUrl=${returnUrl}`;
   
           return { orderNo, redirectUrl };
