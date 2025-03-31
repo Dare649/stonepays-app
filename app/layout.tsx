@@ -21,7 +21,7 @@ export default function RootLayout({
     setPathname(window.location.pathname);
   }, []);
 
-  const excludedPaths = ["/", "/auth/sign-up",  "/error"];
+  const excludedPaths = ["/", "/auth/sign-up", "/auth/verify-otp",  "/error"];
 
   return (
     <html lang="en">
