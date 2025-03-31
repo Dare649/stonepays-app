@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { shop } from "@/data/dummy";
 import Image from "next/image";
 import ReactPaginate from "react-paginate";
@@ -12,6 +12,12 @@ import Tab from "@/components/tabs/page";
 import Description from "../../components/description/page";
 import AdditionalInformation from "../../components/additionalInformation/page";
 import Meta from "../../components/meta/page";
+import type { ProductData } from "@/redux/slice/product/productSlice";
+
+
+interface ShopProps {
+    products: ProductData[];
+  }
 
 interface UnitPrice {
     id: number;
@@ -46,7 +52,7 @@ interface Product {
 
 const ITEMS_PER_PAGE = 10;
 
-const Shop = () => {
+const Shop : React.FC<ShopProps> = ({ products }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [selectedPrice, setSelectedPrice] = useState<number | null>(null);

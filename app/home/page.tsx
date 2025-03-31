@@ -11,6 +11,12 @@ import Tab from "@/components/tabs/page";
 import Description from "../../components/description/page";
 import AdditionalInformation from "../../components/additionalInformation/page";
 import Meta from "../../components/meta/page";
+import type { ProductData } from "@/redux/slice/product/productSlice";
+
+
+interface Home1Props {
+    products: ProductData[];
+  }
 
 interface UnitPrice {
   id: number;
@@ -43,7 +49,7 @@ interface Product {
   meta_information?: MetaInfo[];
 }
 
-const Home1 = () => {
+const Home1 : React.FC<Home1Props> = ({ products }) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
