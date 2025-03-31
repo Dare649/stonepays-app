@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -33,7 +35,7 @@ interface FormState {
 
 const ITEMS_PER_PAGE = 10;
 
-const DigitalProducts: React.FC<DigitalProductsProps> = ({ products }) => {
+const DigitalProducts= ({ products }: DigitalProductsProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(null);
   const [quantity, setQuantity] = useState(1);
