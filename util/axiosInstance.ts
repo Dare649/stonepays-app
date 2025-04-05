@@ -24,7 +24,7 @@ const handleSessionExpiration = () => {
 
   if (typeof window !== "undefined") {
     localStorage.removeItem("token");
-    window.location.href = "/";
+    window.location.href = "/auth/sign-in";
   }
 };
 

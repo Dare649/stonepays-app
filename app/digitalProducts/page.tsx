@@ -12,8 +12,10 @@ import { ProductData } from "@/redux/slice/product/productSlice";
 import { useSearchParams } from "next/navigation";
 import { toast } from 'react-toastify';
 import { createOrder } from "@/redux/slice/order/order";
-import { getSignedInUser } from "@/redux/slice/auth/auth";
+import { useRouter } from "next/navigation";
 import axiosInstance from "@/util/axiosInstance";
+import { IoBagCheckOutline } from "react-icons/io5";
+import { ShoppingCartIcon, HeartIcon } from 'lucide-react'
 
 type DigitalProductsProps =  {
   products: ProductData[];
@@ -45,29 +47,14 @@ const DigitalProducts= ({ products }: DigitalProductsProps) => {
   const [orderId, setOrderId] = useState<string>("");
   const [mockCheckoutUrl, setMockCheckoutUrl] = useState<string>("");
   const [reference, setReference] = useState<string>("");
-  const signedInUser = useSelector((state: RootState) => state.auth.user); 
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
+  const router = useRouter();
+  const user = JSON.parse(localStorage.getItem("userData") || "{}");
+ 
 
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        dispatch(startLoading());
-        const response = await dispatch(getSignedInUser()).unwrap(); // ✅ Fix: Ensure unwrap() usage
-        console.log("User data:", response);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to fetch signed-in user";
-        toast.error(errorMessage);
-      } finally {
-        dispatch(stopLoading());
-      }
-    };
-
-    fetchUser();
-  }, [dispatch]);
 
   const [formData, setFormData] = useState<FormState>({
-    user_id: signedInUser?._id || "",
+    user_id: user._id || "",
     temp_order_id: null,
     products: [],
     total_price: 1,
@@ -86,12 +73,19 @@ const DigitalProducts= ({ products }: DigitalProductsProps) => {
   };
 
   const handleBuyNow = (product: ProductData) => {
-    dispatch(startLoading());
-    setTimeout(() => {
-      setSelectedProduct(product);
-      setQuantity(1);
-      dispatch(stopLoading());
-    }, 2000);
+   
+    if (user && user._id) {
+      dispatch(startLoading());
+      setTimeout(() => {
+        setSelectedProduct(product);
+        setQuantity(1);
+        dispatch(stopLoading());
+      }, 2000);
+    } else {
+      toast.warn("Sign in to place an order")
+      router.push("/auth/sign-in")
+    }
+    
   };
 
   const handleBackToShop = () => {
@@ -110,12 +104,12 @@ const DigitalProducts= ({ products }: DigitalProductsProps) => {
   
   
   const handleCreateOrder = async () => {
-    if (!selectedProduct || !signedInUser) {
+    if (!selectedProduct || !user) {
       return toast.error("User or product not selected");
     }
   
     const formData: FormState = {
-      user_id: signedInUser._id || "",
+      user_id: user._id || "",
       temp_order_id: null,
       products: [
         {
@@ -255,6 +249,9 @@ const DigitalProducts= ({ products }: DigitalProductsProps) => {
   }, [isPaymentConfirmed]); // This effect runs when isPaymentConfirmed is true
   
   
+  const formatNumber = (num: number) => {
+    return Number(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
   
 
 
@@ -263,69 +260,117 @@ const DigitalProducts= ({ products }: DigitalProductsProps) => {
 
   return (
     <div className="w-full flex flex-col">
+      {/* check out section */}
       {selectedProduct ? (
         <div className="w-full">
-          <button className="mb-4 px-4 py-2 bg-primary-1 text-white rounded cursor-pointer" onClick={handleBackToShop}>
-            ← Back to Shop
-          </button>
-          <div className="w-full flex lg:flex-row sm:flex-col items-start gap-5">
-            <div className="lg:w-[50%] sm:w-full">
-              <Image src={selectedProduct.product_img} alt={selectedProduct.product_name} width={100} height={100} priority className="object-contain w-full" />
-            </div>
-            <div className="lg:w-[50%] sm:w-full">
-              <h3 className="text-lg font-semibold capitalize">{selectedProduct.product_name}</h3>
-              <p className="text-primary-1 font-bold mt-2">${selectedProduct.product_price}</p>
-              <div className="flex flex-col justify-end mt-4">
-                <div className="flex items-center gap-x-2">
-                  <h2>Quantity:</h2>
-                  <div className="flex items-center border-2 border-black w-fit">
-                    <button className="px-4 py-2 hover:bg-primary-1 hover:text-white cursor-pointer" onClick={() => handleQuantityChange("decrease")}>-</button>
-                    <span className="px-4 py-2 border-x-2 border-black">{quantity}</span>
-                    <button className="px-4 py-2 hover:bg-primary-1 hover:text-white cursor-pointer" onClick={() => handleQuantityChange("increase")}>+</button>
-                  </div>
+        <button 
+          className="mb-4 px-4 py-2 bg-primary-1 text-white rounded cursor-pointer" 
+          onClick={handleBackToShop}
+        >
+          ← Back to Shop
+        </button>
+        <div className="w-full flex lg:flex-row sm:flex-col items-start gap-5">
+          {/* Product Image Section */}
+          <div className="lg:w-[50%] sm:w-full">
+            <Image
+              src={selectedProduct.product_img}
+              alt={selectedProduct.product_name}
+              width={300}
+              height={300}
+              priority
+              className="object-contain w-full rounded-lg"
+            />
+          </div>
+          {/* Product Details Section */}
+          <div className="lg:w-[50%] sm:w-full">
+            <h3 className="text-2xl font-semibold capitalize text-gray-900">{selectedProduct.product_name}</h3>
+            <p className="text-primary-1 font-bold mt-2 text-xl">
+              ${formatNumber(selectedProduct.product_price)}
+            </p>
+            <div className="flex flex-col justify-end mt-4">
+              {/* Quantity Section */}
+              <div className="flex items-center gap-x-2 mb-4">
+                <h2 className="text-lg font-semibold">Quantity:</h2>
+                <div className="flex items-center border-2 border-gray-300 rounded">
+                  <button 
+                    className="px-4 py-2 hover:bg-primary-1 hover:text-white cursor-pointer"
+                    onClick={() => handleQuantityChange("decrease")}
+                  >
+                    -
+                  </button>
+                  <span className="px-4 py-2 border-x-2 border-gray-300">{quantity}</span>
+                  <button 
+                    className="px-4 py-2 hover:bg-primary-1 hover:text-white cursor-pointer"
+                    onClick={() => handleQuantityChange("increase")}
+                  >
+                    +
+                  </button>
                 </div>
-                <h2 className="flex items-center gap-x-2">
-                  <span>Total Price:</span>
-                  <span>${selectedProduct ? (selectedProduct.product_price * quantity).toFixed(2) : "0.00"}</span>
-                </h2>
               </div>
-              <button 
-                className="mt-4 w-full px-4 py-2 bg-primary-1 text-white rounded"
-                onClick={handleCreateOrder}
-              >Confirm Purchase</button>
+              {/* Total Price Section */}
+              <h2 className="text-lg font-semibold flex items-center gap-x-2">
+                <span>Total Price:</span>
+                <span className="text-xl font-bold">${selectedProduct ? (selectedProduct.product_price * quantity).toFixed(2) : "0.00"}</span>
+              </h2>
             </div>
+            {/* Confirm Purchase Button */}
+            <button 
+              className="mt-4 w-full px-4 py-2 bg-primary-1 text-white rounded-lg font-semibold"
+              onClick={handleCreateOrder}
+            >
+              Confirm Purchase
+            </button>
           </div>
         </div>
+      </div>
       ) : (
         <>
-          <div className="w-full flex justify-end mb-5">
-            <div className="lg:w-[25%] sm:w-full">
-              <select className="w-full border-2 border-gray-400 outline-none active:border-primary-1 capitalize p-2 cursor-pointer">
-                <option value="">default sorting</option>
-                <option value="">sort by popularity</option>
-                <option value="">sort by average rating</option>
-                <option value="">sort by latest</option>
-                <option value="">sort by price: low to high</option>
-                <option value="">sort by price: high to low</option>
-              </select>
-            </div>
-          </div>
+          
 
-          <div className="grid lg:grid-cols-4 sm:grid-cols-2 gap-5">
+          <div className="grid lg:grid-cols-4 sm:grid-cols-1 md:grid-cols-2 gap-5">
             {currentItems.map((item) => (
-              <div key={item._id} className="p-4 rounded-lg shadow-lg relative group transition-all duration-300 hover:scale-105">
-                <Image src={item.product_img} alt={item.product_name} width={100} height={100} className="object-contain w-full transition-opacity duration-300" quality={100} priority />
-                <div className="mt-2 transition-opacity duration-300 group-hover:opacity-100">
-                  <h2 className="font-semibold">{item.product_name}</h2>
-                  <h2 className="flex items-center justify-between text-primary-1 font-bold">
-                    <span className="capitalize sm:text-sm lg:text-base">{item.product_category}</span>
-                    <span className="lg:text-2xl sm:text-base">${item.product_price}</span>
-                  </h2>
+              <div key={item._id} className="group">
+                <div className="relative overflow-hidden rounded-lg mb-3">
+                  <img
+                    src={item.product_img}
+                    alt={item.product_name}
+                    className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
+                  {/* Tags */}
+                  
+                  {/* Quick actions */}
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center sm:flex">
+                    <button className="bg-white border-2 border-black flex items-center px-2 gap-x-1 text-gray-900 p-2 rounded-full mx-1 hover:bg-gray-100 capitalize cursor-pointer text-xs font-bold">
+                      <ShoppingCartIcon size={18} />
+                      <span className="text-xs font-bold">add to cart</span>
+                    </button>
+                    <button
+                      className="bg-black text-white p-2 rounded-full mx-1 flex items-center px-2 gap-x-1 cursor-pointer"
+                      onClick={() => handleBuyNow(item)}
+                    >
+                      <IoBagCheckOutline />
+                      <span className="text-xs font-bold">Buy Now</span>
+                    </button>
+                  </div>
+
                 </div>
-                <button className="text-center text-white bg-primary-1 capitalize lg:px-5 lg:py-2 sm:px-2 sm:py-1 rounded w-full mt-2 sm:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 cursor-pointer" onClick={() => handleBuyNow(item)}>
-                  Buy Now
-                </button>
-              </div>
+                <div className="px-1">
+                  <div className="text-sm font-bold text-gray-500 mb-1 capitalize">{item.product_category}</div>
+                  <h3 className="font-bold text-gray-900 mb-1 capitalize">{item.product_name}</h3>
+                  <div className="flex items-center gap-x-3">
+                    <span className="font-medium">${formatNumber(item.product_price)}</span>
+                    <span>
+                      {item.product_qty === 0 ? (
+                        <p className="text-red-500 font-semibold">Out of Stock</p>
+                      ) : (
+                        <p className="text-green-500 font-semibold">In Stock</p>
+                      )}
+                    </span>
+                  </div>
+                </div>
+            </div>
+            
             ))}
           </div>
 

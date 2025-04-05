@@ -205,7 +205,7 @@ const Signup = () => {
           <div className="flex justify-center mt-5">
             <p className="text-gray-400 font-bold first-letter:capitalize">
               Alreasy have an account?{" "}
-              <Link href="/" className="text-primary-1 first-letter:capitalize">
+              <Link href="/auth/sign-in" className="text-primary-1 first-letter:capitalize">
                 Sign in
               </Link>
             </p>

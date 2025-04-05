@@ -39,7 +39,7 @@ const Tab: React.FC<TabProps> = ({ content1, content2, content3, content4, conte
         ))}
       </div>
       {/* Tab Content */}
-      <div className="outlet w-full bg-white lg:mt-10 sm:mt-8 border-8 border-gray-200 lg:p-5 sm:p-3 rounded-4xl">
+      <div className="outlet w-full bg-white lg:mt-10 sm:mt-8">
         {activeTab === "tab1" && <div className="duration-500">{content1}</div>}
         {activeTab === "tab2" && <div>{content2}</div>}
         {activeTab === "tab3" && <div>{content3}</div>}

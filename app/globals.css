@@ -25,5 +25,64 @@
   }
 
 
+  /* Hero Section */
+.hero-section {
+  position: relative;
+  background-image: url('/image/stone1.png');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+}
+
+/* .hero-section .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+} */
+
+.hero-section .content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  color: white;
+  padding: 0 1.5rem; /* For padding similar to md:px-12 */
+}
+
+.hero-section .content h1 {
+  font-size: 2.25rem; /* For text-4xl */
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.hero-section .content p {
+  font-size: 1.125rem; /* For text-lg */
+  margin-bottom: 1.5rem;
+}
+
+.hero-section .cta-button {
+  background-color: #2563eb; /* For bg-blue-600 */
+  color: white;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.hero-section .cta-button:hover {
+  background-color: #1d4ed8; /* For hover:bg-blue-700 */
+}
+
+
+
   
   
