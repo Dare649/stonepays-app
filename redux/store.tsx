@@ -6,6 +6,8 @@ import loadingReducer from '@/redux/slice/loadingSlice';
 import productReducer from "@/redux/slice/product/productSlice";
 import orderReducer from "@/redux/slice/order/orderSlice"
 import paymentReducer from "@/redux/slice/payment/paymentSlice";
+import categoryReducer from "@/redux/slice/category/categorySlice";
+import cartReducer from "@/redux/slice/cart/cartSlice";
 
 const persistConfig = {
     key: 'root',
@@ -16,6 +18,8 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const persistedProductReducer = persistReducer(persistConfig, productReducer);
 const persistedOrderReducer = persistReducer(persistConfig, orderReducer);
 const persistedPaymentReducer = persistReducer(persistConfig, paymentReducer);
+const persistedCategoryReducer = persistReducer(persistConfig, categoryReducer);
+const persistedCartReducer = persistReducer(persistConfig, cartReducer);
 
 export const store = configureStore({
     reducer: {
@@ -24,6 +28,8 @@ export const store = configureStore({
         product: persistedProductReducer,
         order: persistedOrderReducer,
         payment: persistedPaymentReducer,
+        category: persistedCategoryReducer,
+        cart: persistedCartReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

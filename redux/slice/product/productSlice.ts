@@ -13,7 +13,7 @@ export interface ProductData {
     _id?: string;
     id?: string;
     product_name: string;
-    product_category: string;
+    product_category_id: string;
     product_price: number;
     product_description: string;
     product_img: string,
