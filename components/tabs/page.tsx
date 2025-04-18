@@ -21,7 +21,7 @@ const Tab: React.FC<TabProps> = ({ titles, contents }) => {
             onClick={() => setActiveTab(index)}
             className={` cursor-pointer capitalize font-bold transition-all 
               ${activeTab === index ? "text-primary-2" : ""}
-              py-2 hover:bg-gray-200 rounded-sm transition duration-200
+              py-2 rounded-sm transition duration-200
             `}
           >
             <h2>{title}</h2>

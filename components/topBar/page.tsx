@@ -22,9 +22,23 @@ const TopBar = () => {
 
   useEffect(() => {
     // Check user data in localStorage on component mount
-    const storedUser = JSON.parse(localStorage.getItem("userData") || "{}");
-    setUser(storedUser);
-    
+    const storedUser = localStorage.getItem("userData");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && Object.keys(parsedUser).length > 0) {
+          setUser(parsedUser); // Set user if valid data exists
+        } else {
+          setUser(null); // Set user to null if data is invalid
+        }
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        setUser(null); // Set user to null if parsing fails
+      }
+    } else {
+      setUser(null); // Set user to null if no data exists
+    }
+  
     // Listen to the scroll event
     const handleScroll = () => {
       if (window.scrollY > 500) {
@@ -33,10 +47,10 @@ const TopBar = () => {
         setScrolled(false);
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
+  
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -107,6 +121,7 @@ const TopBar = () => {
 
         <div className="lg:w-[30%] sm:w-[15%] flex justify-end items-center gap-x-5">
           {user ? (
+            // Show only the "Sign out" button when there is a user
             <div
               onClick={handleSignout}
               className={`rounded-lg capitalize py-3 px-5 font-bold cursor-pointer transition-all duration-300 ${
@@ -116,6 +131,7 @@ const TopBar = () => {
               Sign out
             </div>
           ) : (
+            // Show "Sign up" and "Sign in" buttons when there is no user
             <div className="flex items-center gap-x-3">
               <Link
                 href="/auth/sign-up"
@@ -135,22 +151,6 @@ const TopBar = () => {
               </Link>
             </div>
           )}
-
-          <div className={
-            ` relative flex items-center justify-center h-10 w-10 rounded-full ${!scrolled ? "bg-white" : "bg-primary-1"}` 
-            }
-          >
-
-            <IoBagCheckOutline className={
-              `font-bold ${!scrolled ? "text-primary-1 " : "text-white "}`
-              } 
-              size={25}
-            />
-
-            <div className={`absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold  rounded-full ${scrolled ? "bg-white text-primary-1" : "bg-primary-1 text-white"}`}>
-              12
-            </div>
-          </div>
         </div>
         </div>
       </div>
@@ -179,51 +179,51 @@ const TopBar = () => {
       {
         open && (
           <Modal onClose={handleMenu} visible={open}>
-          <div className="w-full h-screen flex">
-            <div className="w-full h-full  p-5 relative">
-              <div className="w-[50%]">
-                <Image
-                  src="/image/logo.png"
-                  alt="stonepay-admin-app"
-                  width={100}
-                  height={100}
-                  className="object-contain w-full"
-                  quality={100}
-                  priority
-                />
-              </div>
-              <div className="p-5 w-full">
-                {
-                  !user ? (
-                    <div className="w-full">
-                      <div className="py-3 flex items-center gap-x-3  font-semibold border-b-2 border-primary-1 text-gray-700 capitalize">
-                      sign up
-                      </div>
-                      <div className="py-3 flex items-center gap-x-3  font-semibold border-b-2 border-primary-1 text-gray-700 capitalize">
-                        sign in
-                      </div>
-                    </div>
-                  ) : (
-                    <div 
-                      className="py-3 flex items-center gap-x-3  font-semibold text-red-500 capitalize"
+            <div className="w-full h-screen flex">
+              <div className="w-full h-full p-5 relative">
+                <div className="w-[50%]">
+                  <Image
+                    src="/image/logo.png"
+                    alt="stonepay-admin-app"
+                    width={100}
+                    height={100}
+                    className="object-contain w-full"
+                    quality={100}
+                    priority
+                  />
+                </div>
+                <div className="p-5 w-full">
+                  {user ? (
+                    // Show only the "Sign out" button when there is a user
+                    <div
+                      className="py-3 flex items-center gap-x-3 font-semibold text-red-500 capitalize"
                       onClick={handleSignout}
                     >
-                      sign out
+                      Sign out
                     </div>
-                  )
-                }
-              </div>
+                  ) : (
+                    // Show "Sign up" and "Sign in" buttons when there is no user
+                    <div className="w-full">
+                      <div className="py-3 flex items-center gap-x-3 font-semibold border-b-2 border-primary-1 text-gray-700 capitalize">
+                        Sign up
+                      </div>
+                      <div className="py-3 flex items-center gap-x-3 font-semibold border-b-2 border-primary-1 text-gray-700 capitalize">
+                        Sign in
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-              {/* Close icon */}
-              <button
-                className="absolute top-5 right-0 text-primary-1 font-bold text-2xl"
-                onClick={handleMenu}
-              >
-                <IoMdClose size={25}/>
-              </button>
+                {/* Close icon */}
+                <button
+                  className="absolute top-5 right-0 text-primary-1 font-bold text-2xl"
+                  onClick={handleMenu}
+                >
+                  <IoMdClose size={25} />
+                </button>
+              </div>
             </div>
-          </div>
-        </Modal>
+          </Modal>
         )
       }
     </div>

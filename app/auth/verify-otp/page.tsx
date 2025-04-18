@@ -76,7 +76,7 @@ const VerifyOtp = () => {
         // Remove email from localStorage after successful verification
         localStorage.removeItem("userEmail");
 
-        router.push("/");
+        router.push("/auth/sign-in");
       }
     } catch (error) {
       toast.error("OTP verification failed!");
